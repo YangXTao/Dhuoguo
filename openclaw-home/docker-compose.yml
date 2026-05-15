@@ -1,0 +1,74 @@
+services:
+  openclaw-gateway:
+    image: ${OPENCLAW_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+    container_name: openclaw-gateway
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-http://searxng:8080}
+      OPENCLAW_DEFAULT_MODEL: ${OPENCLAW_DEFAULT_MODEL:-openai-codex/gpt-5.5}
+    depends_on:
+      - searxng
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "18789:18789"
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./agents:/home/node/.openclaw/agents
+      - ./skills:/home/node/.openclaw/skills
+      - ./memory:/home/node/.openclaw/memory
+      - ./workspace:/home/node/.openclaw/workspace
+      - ./data:/home/node/.openclaw/data
+      - ./auth:/home/node/.openclaw/auth
+      - ./logs:/home/node/.openclaw/logs
+
+  openclaw-cli:
+    image: ${OPENCLAW_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+    profiles:
+      - cli
+    env_file:
+      - .env
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-http://searxng:8080}
+      OPENCLAW_DEFAULT_MODEL: ${OPENCLAW_DEFAULT_MODEL:-openai-codex/gpt-5.5}
+    depends_on:
+      - openclaw-gateway
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./agents:/home/node/.openclaw/agents
+      - ./skills:/home/node/.openclaw/skills
+      - ./memory:/home/node/.openclaw/memory
+      - ./workspace:/home/node/.openclaw/workspace
+      - ./data:/home/node/.openclaw/data
+      - ./auth:/home/node/.openclaw/auth
+      - ./logs:/home/node/.openclaw/logs
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: openclaw-searxng
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      BASE_URL: http://searxng:8080/
+      INSTANCE_NAME: openclaw-searxng
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      ALL_PROXY: ${ALL_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,searxng,openclaw-gateway}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - searxng-cache:/var/cache/searxng
+
+volumes:
+  searxng-cache:

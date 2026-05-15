@@ -1,0 +1,57 @@
+{
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai-codex/gpt-5.5"
+      },
+      "instructions": [
+        "/home/node/.openclaw/agents/main.md",
+        "/home/node/.openclaw/agents/routing.md"
+      ]
+    }
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "enabled": true,
+        "provider": "searxng",
+        "baseUrl": "${SEARXNG_BASE_URL}",
+        "maxResults": 8,
+        "timeoutSeconds": 30
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "active-memory": {
+        "enabled": true,
+        "config": {
+          "enabled": true,
+          "agents": ["main"],
+          "allowedChatTypes": ["direct", "group"],
+          "queryMode": "recent",
+          "promptStyle": "balanced",
+          "timeoutMs": 15000,
+          "maxSummaryChars": 1200,
+          "persistTranscripts": false,
+          "logging": true
+        }
+      },
+      "searxng": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "baseUrl": "${SEARXNG_BASE_URL}",
+            "maxResults": 8
+          }
+        }
+      }
+    }
+  },
+  "security": {
+    "defaultFilePolicy": "deny",
+    "requireConfirmationForDelete": true,
+    "cloudModelSensitiveDataPolicy": "deny-unless-explicit"
+  }
+}
+
