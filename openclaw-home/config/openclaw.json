@@ -4,10 +4,18 @@
       "model": {
         "primary": "openai-codex/gpt-5.5"
       },
-      "instructions": [
-        "/home/node/.openclaw/agents/main.md",
-        "/home/node/.openclaw/agents/routing.md"
-      ]
+      "workspace": "/home/node/.openclaw/workspace",
+      "skills": [
+        "searxng-search",
+        "complex-code",
+        "local-file-organizer",
+        "longhorn-k8s-helper",
+        "memory-curator",
+        "safe-shell"
+      ],
+      "userTimezone": "Asia/Shanghai",
+      "timeFormat": "YYYY-MM-DD HH:mm:ss",
+      "systemPromptOverride": "你是用户的长期个人工作助手，由 OpenClaw 调度。默认使用中文回答，先给结论，再给步骤。需要搜索互联网时必须使用内网 SearXNG；复杂代码、架构设计、Kubernetes/Longhorn 排障优先使用 openai-codex/gpt-5.5；涉及本地文件整理时必须走本地节点或本地文件 skill；涉及隐私文件、密钥、聊天记录时默认不要发送给云端模型。不要直接删除文件，删除或破坏性操作必须先确认。重要部署决策、用户偏好和重复问题需要沉淀为长期记忆。"
     }
   },
   "tools": {
@@ -15,9 +23,12 @@
       "search": {
         "enabled": true,
         "provider": "searxng",
-        "baseUrl": "${SEARXNG_BASE_URL}",
         "maxResults": 8,
-        "timeoutSeconds": 30
+        "timeoutSeconds": 30,
+        "cacheTtlMinutes": 15,
+        "openaiCodex": {
+          "enabled": false
+        }
       }
     }
   },
@@ -42,16 +53,10 @@
         "config": {
           "webSearch": {
             "baseUrl": "${SEARXNG_BASE_URL}",
-            "maxResults": 8
+            "categories": "general,news"
           }
         }
       }
     }
-  },
-  "security": {
-    "defaultFilePolicy": "deny",
-    "requireConfirmationForDelete": true,
-    "cloudModelSensitiveDataPolicy": "deny-unless-explicit"
   }
 }
-
