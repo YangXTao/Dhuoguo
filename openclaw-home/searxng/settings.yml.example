@@ -31,6 +31,11 @@ outgoing:
   max_request_timeout: 30.0
   extra_proxy_timeout: 10
   enable_http2: false
+  # 如果 SearXNG 需要显式代理，在服务器私有的 settings.yml 里取消注释并填写真实地址。
+  # 不要把带密码的 settings.yml 提交到 Git。
+  # proxies:
+  #   all://:
+  #     - http://用户名:密码@代理IP:端口
 
 engines:
   - name: bing

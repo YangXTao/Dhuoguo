@@ -1,4 +1,5 @@
 .env
+searxng/settings.yml
 auth/*
 data/*
 memory/*
@@ -12,4 +13,3 @@ logs/*
 !workspace/.gitkeep
 !backups/.gitkeep
 !logs/.gitkeep
-

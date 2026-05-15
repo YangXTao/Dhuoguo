@@ -44,6 +44,7 @@ Copy the environment template:
 
 ```bash
 cp .env.example .env
+cp searxng/settings.yml.example searxng/settings.yml
 ```
 
 Start SearXNG and OpenClaw:
@@ -94,6 +95,7 @@ Commit:
 Do not commit:
 
 - `.env`
+- `searxng/settings.yml`
 - `auth/`
 - `memory/`
 - `data/`
@@ -114,4 +116,3 @@ Restore it on the new machine and run:
 ```bash
 docker compose up -d
 ```
-
